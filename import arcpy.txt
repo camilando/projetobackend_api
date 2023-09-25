@@ -1,0 +1,34 @@
+import arcpy
+arcpy.env.workspace = "C:/data/"
+arcpy.Append_management(["north.shp", "south.shp", "east.shp", "west.shp"], "wholecity.shp", "TEST","","")
+
+# Name: Append.py
+# Description: Use the Append tool to combine several shapefiles
+
+# importar modulos de sistema 
+import arcpy
+import os
+
+# configurar ambiente
+arcpy.env.workspace = "C:/data"
+
+# configurar variaveis locais
+outLocation = "C:/Output"
+emptyFC = "MA_towns.shp"
+schemaType = "NO_TEST"
+fieldMappings = ""
+subtype = ""
+
+try:
+    # Process:  Create a new empty feature class to append shapefiles into
+    arcpy.CreateFeatureclass_management(outLocation, emptyFC, "POLYGON", "amherst.shp")
+
+    # All polygon FCs in the workspace are MA town shapefiles, we want to append these to the empty FC
+    fcList = arcpy.ListFeatureClasses("","POLYGON")
+    # list will resemble ["amherst.shp", "hadley.shp", "pelham.shp", "coldspring.shp"] 
+
+    # Process: Append the feature classes into the empty feature class
+    arcpy.Append_management(fcList, outLocation + os.sep + emptyFC, schemaType, fieldMappings, subtype)
+
+except Exception as err:
+    print(err.args[0])
